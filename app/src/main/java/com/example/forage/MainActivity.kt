@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph
-import com.example.forage.ui.NavGraphs
+import com.example.forage.feature_forage.presentation.items.NavGraphs
 import com.example.forage.ui.theme.ForageTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 

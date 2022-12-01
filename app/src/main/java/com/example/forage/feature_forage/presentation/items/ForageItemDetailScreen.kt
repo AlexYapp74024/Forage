@@ -1,4 +1,4 @@
-package com.example.forage.ui
+package com.example.forage.feature_forage.presentation.items
 
 import androidx.compose.runtime.Composable
 

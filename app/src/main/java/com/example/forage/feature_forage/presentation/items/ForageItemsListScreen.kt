@@ -1,4 +1,4 @@
-package com.example.forage.ui
+package com.example.forage.feature_forage.presentation.items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
@@ -24,7 +25,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination
 @Composable
 fun ForageItemListScreen(
-    navigator: DestinationsNavigator,
 //    viewModel: ForageItemViewModel = hiltViewModel()
 ) {
 //    val state = viewModel.state.value
