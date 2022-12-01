@@ -9,9 +9,9 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class ForageItem(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val name: String,
-    val location: String,
-    val inSeason: Boolean,
-    val notes: String,
+    val id: Int = 0,
+    val name: String = "",
+    val location: String = "",
+    val inSeason: Boolean = true,
+    val notes: String = "",
 ) : Parcelable
