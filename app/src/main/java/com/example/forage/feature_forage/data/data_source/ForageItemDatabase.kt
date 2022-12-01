@@ -8,7 +8,11 @@ import com.example.forage.feature_forage.domain.model.ForageItem
     entities = [ForageItem::class],
     version = 1,
 )
-abstract class ForageItemDatabase() : RoomDatabase() {
+abstract class ForageItemDatabase : RoomDatabase() {
 
     abstract val forageItemDao: ForageItemDao
+
+    companion object {
+        const val DATABASE_NAME = "ForageDb"
+    }
 }

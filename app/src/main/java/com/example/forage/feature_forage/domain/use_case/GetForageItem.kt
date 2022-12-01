@@ -11,19 +11,20 @@ class GetForageItem(
     private val repository: ForageItemRepository
 ) {
     operator fun invoke(
-        itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending)
+        itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending),
+        onlyInSeason: Boolean = true,
     ): Flow<List<ForageItem>> {
         return repository.getAll().map { items ->
-            sortOrder(items, itemOrder)
+            items.filter { !onlyInSeason || it.inSeason }
+                .sortOrder(itemOrder)
         }
     }
 
-    private fun sortOrder(
-        list: List<ForageItem>,
+    private fun List<ForageItem>.sortOrder(
         sortType: ForageItemOrder,
     ) = when (sortType.orderType) {
-        is OrderType.Ascending -> list.sortedBy { sortBy(it, sortType) }
-        is OrderType.Descending -> list.sortedByDescending { sortBy(it, sortType) }
+        is OrderType.Ascending -> this.sortedBy { sortBy(it, sortType) }
+        is OrderType.Descending -> this.sortedByDescending { sortBy(it, sortType) }
     }
 
     private fun sortBy(
