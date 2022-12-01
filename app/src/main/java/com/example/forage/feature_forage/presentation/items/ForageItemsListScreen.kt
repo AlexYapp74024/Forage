@@ -19,22 +19,15 @@ import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @RootNavGraph(start = true)
 @Destination
 @Composable
 fun ForageItemListScreen(
-//    viewModel: ForageItemViewModel = hiltViewModel()
+    viewModel: ForageItemViewModel = hiltViewModel()
 ) {
-//    val state = viewModel.state.value
-//    ForageItemListScreenContent(state.items)
-    ForageItemListScreenContent(
-        forageItemList = listOf(
-            ForageItem(0, "wild gooseberry", "Mountain View", true, ""),
-            ForageItem(2, "Blackberry (Rubus sp.)", "Forest", true, "")
-        ),
-    )
+    val state = viewModel.state.value
+    ForageItemListScreenContent(state.items)
 }
 
 @Preview(showBackground = true)
@@ -71,7 +64,7 @@ fun ForageItemListScreenContent(
         ) {
             items(forageItemList) { item ->
                 ForageListItemEntry(item = item,
-                    itemOnClick = { TODO() })
+                    itemOnClick = { })
             }
 
         }
