@@ -1,9 +1,12 @@
 package com.example.forage.feature_forage.domain.use_case
 
+import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
 
-class GetForageItem(
+class AddForageItem(
     private val repository: ForageItemRepository
 ) {
-    operator fun invoke(id: Int) = repository.getItem(id)
+    suspend operator fun invoke(forageItem: ForageItem) {
+        repository.insert(forageItem)
+    }
 }

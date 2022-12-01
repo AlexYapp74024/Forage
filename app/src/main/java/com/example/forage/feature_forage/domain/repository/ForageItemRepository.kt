@@ -1,14 +1,11 @@
 package com.example.forage.feature_forage.domain.repository
 
-import androidx.room.*
 import com.example.forage.feature_forage.domain.model.ForageItem
 import kotlinx.coroutines.flow.Flow
 
-interface ForageItemRepository  {
+interface ForageItemRepository {
 
     suspend fun insert(item: ForageItem)
-
-    suspend fun update(item: ForageItem)
 
     suspend fun delete(item: ForageItem)
 

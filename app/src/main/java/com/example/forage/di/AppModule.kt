@@ -5,9 +5,7 @@ import androidx.room.Room
 import com.example.forage.feature_forage.data.data_source.ForageItemDatabase
 import com.example.forage.feature_forage.data.repository.ForageItemRepositoryImpl
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
-import com.example.forage.feature_forage.domain.use_case.DeleteForageItem
-import com.example.forage.feature_forage.domain.use_case.ForageItemUseCases
-import com.example.forage.feature_forage.domain.use_case.GetForageItem
+import com.example.forage.feature_forage.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,8 +36,10 @@ object AppModule {
     @Singleton
     fun provideForageItemUseCases(repository: ForageItemRepository): ForageItemUseCases {
         return ForageItemUseCases(
+            getAllForageItems = GetAllForageItems(repository),
             getForageItem = GetForageItem(repository),
             deleteForageItem = DeleteForageItem(repository),
+            addForageItem = AddForageItem(repository),
         )
     }
 }

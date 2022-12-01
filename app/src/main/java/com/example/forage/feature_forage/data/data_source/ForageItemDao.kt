@@ -7,11 +7,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ForageItemDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: ForageItem)
-
-    @Update
-    suspend fun update(item: ForageItem)
 
     @Delete
     suspend fun delete(item: ForageItem)

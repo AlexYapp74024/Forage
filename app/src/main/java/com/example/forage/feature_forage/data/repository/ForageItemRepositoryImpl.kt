@@ -10,8 +10,6 @@ class ForageItemRepositoryImpl(
 ) : ForageItemRepository {
     override suspend fun insert(item: ForageItem) = dao.insert(item)
 
-    override suspend fun update(item: ForageItem) = dao.update(item)
-
     override suspend fun delete(item: ForageItem) = dao.delete(item)
 
     override fun getItem(id: Int): Flow<ForageItem?> = dao.getItem(id)
