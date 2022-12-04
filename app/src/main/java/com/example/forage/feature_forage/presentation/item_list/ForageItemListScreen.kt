@@ -1,10 +1,7 @@
-package com.example.forage.feature_forage.presentation.items
+package com.example.forage.feature_forage.presentation.item_list
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
@@ -23,15 +20,21 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
+private lateinit var viewModel: ForageItemListViewModel
+private var navigator: DestinationsNavigator = EmptyDestinationsNavigator
+
 @RootNavGraph(start = true)
 @Destination
 @Composable
 fun ForageItemListScreen(
-    viewModel: ForageItemViewModel = hiltViewModel(),
-    navigator: DestinationsNavigator,
+    viewModelIn: ForageItemListViewModel = hiltViewModel(),
+    navigatorIn: DestinationsNavigator,
 ) {
+    viewModel = viewModelIn
+    navigator = navigatorIn
+
     val state = viewModel.state.value
-    ForageItemListScreenContent(state.items, navigator)
+    ForageItemListScreenContent(state.items)
 }
 
 @Preview(showBackground = true)
@@ -41,22 +44,20 @@ fun ForageItemListPreview() {
         forageItemList = listOf(
             ForageItem(0, "wild gooseberry", "Mountain View", true, ""),
             ForageItem(2, "Blackberry (Rubus sp.)", "Forest", true, "")
-        ),
-        EmptyDestinationsNavigator
+        )
     )
 }
 
 @Composable
 fun ForageItemListScreenContent(
     forageItemList: List<ForageItem>,
-    navigator: DestinationsNavigator,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
-            ItemListFloatingActionButton(floatingActionBtnOnClick = {
-                navigator.navigate(AddForageItemScreenDestination(0))
+            AddItemFloatingActionButton(floatingActionBtnOnClick = {
+                navigator.navigate(AddForageItemScreenDestination)
             })
         },
         topBar = {
@@ -75,7 +76,9 @@ fun ForageItemListScreenContent(
         ) {
             items(forageItemList) { item ->
                 ForageListItemEntry(item = item,
-                    itemOnClick = { })
+                    itemOnClick = {
+                        viewModel.viewItem(navigator, item.id)
+                    })
             }
 
         }
@@ -85,19 +88,21 @@ fun ForageItemListScreenContent(
 @Composable
 fun ForageListItemEntry(
     item: ForageItem,
-    itemOnClick: (Int) -> Unit,
+    itemOnClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.clickable {
-        itemOnClick(item.id)
-    }) {
+    Column(modifier = modifier
+        .fillMaxWidth()
+        .clickable {
+            itemOnClick()
+        }) {
         Text(text = item.name, style = MaterialTheme.typography.h5)
         Text(text = item.location, style = MaterialTheme.typography.body1)
     }
 }
 
 @Composable
-fun ItemListFloatingActionButton(
+fun AddItemFloatingActionButton(
     floatingActionBtnOnClick: () -> Unit
 ) {
     FloatingActionButton(

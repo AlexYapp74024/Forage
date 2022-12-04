@@ -1,4 +1,4 @@
-package com.example.forage.feature_forage.presentation.add_edit_item
+package com.example.forage.feature_forage.presentation.item_detail
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -12,34 +12,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEditViewModel @Inject constructor(
+class ForageItemDetailViewModel @Inject constructor(
     private val useCases: ForageItemUseCases,
 ) : ViewModel() {
 
     private var _item = mutableStateOf(ForageItem())
     val item: State<ForageItem> = _item
 
-    fun updateItemState(item: ForageItem) {
-        _item.value = item
-    }
-
     fun retrieveItem(id: Int) {
         viewModelScope.launch {
             useCases.getForageItem(id)
                 .map { it ?: ForageItem() }
                 .collect { _item.value = it }
-        }
-    }
-
-    fun addItem() {
-        viewModelScope.launch {
-            useCases.addForageItem(item.value)
-        }
-    }
-
-    fun deleteItem() {
-        viewModelScope.launch {
-            useCases.deleteForageItem(item.value)
         }
     }
 }
