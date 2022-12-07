@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.forage.feature_forage.domain.model.ForageItem
+import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.example.forage.feature_forage.presentation.destinations.ForageItemListScreenDestination
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
@@ -28,7 +30,9 @@ fun AddForageItemScreen(
     viewModel = viewModelIn
     navigator = navigatorIn
     showDelete = false
-    AddEditForageItemContent()
+
+    val item by viewModel.item
+    AddEditForageItemContent(item)
 }
 
 @Destination
@@ -43,12 +47,20 @@ fun EditForageItemScreen(
     showDelete = true
 
     viewModel.retrieveItem(itemId)
-    AddEditForageItemContent()
+
+    val item by viewModel.item
+    AddEditForageItemContent(item)
 }
 
 @Preview(showBackground = true)
 @Composable
+fun AddEditForageItemPreview() {
+    AddEditForageItemContent(exampleForageItem)
+}
+
+@Composable
 fun AddEditForageItemContent(
+    item: ForageItem,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -60,16 +72,15 @@ fun AddEditForageItemContent(
                 navigateUp = { },
             )
         }) { innerPadding ->
-        AddEditItem(modifier.padding(innerPadding))
+        AddEditItem(item, modifier.padding(innerPadding))
     }
 }
 
 @Composable
 fun AddEditItem(
+    item: ForageItem,
     modifier: Modifier = Modifier,
 ) {
-    val item by viewModel.item
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -108,7 +119,6 @@ fun AddEditItem(
             modifier = defaultModifier,
             value = item.notes,
             onValueChange = { viewModel.updateItemState(item.copy(notes = it)) },
-            singleLine = true,
             label = { Text(text = "Notes") })
 
         Button(

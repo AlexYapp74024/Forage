@@ -15,3 +15,10 @@ data class ForageItem(
     val inSeason: Boolean = true,
     val notes: String = "",
 ) : Parcelable
+
+val exampleForageItem: ForageItem
+    get() = ForageItem(
+        name = "Honeyberry",
+        location = "CertShop",
+        notes = "cute af"
+    )

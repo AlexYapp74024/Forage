@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.forage.feature_forage.domain.model.ForageItem
+import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.example.forage.feature_forage.presentation.destinations.EditForageItemScreenDestination
 import com.example.forage.feature_forage.presentation.item_detail.ForageItemDetailViewModel
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
@@ -44,11 +45,7 @@ fun ForageItemDetailScreen(
 @Composable
 fun ForageItemDetailPreview() {
     ForageItemDetailScreen(
-        ForageItem(
-            name = "Honeyberry",
-            location = "CertShop",
-            notes = "cute af"
-        )
+        exampleForageItem
     )
 }
 
