@@ -67,8 +67,7 @@ fun ForageItemDetailScreen(
                 canNavigateBack = true,
                 navigateUp = { },
             )
-        })
-    { innerPadding ->
+        }) { innerPadding ->
         Column(
             modifier = modifier
                 .fillMaxWidth()

@@ -1,5 +1,6 @@
 package com.example.forage.feature_forage.presentation.add_edit_item
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,10 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.forage.R
 import com.example.forage.core.image_processing.getImageFromInternalStorageLauncher
 import com.example.forage.feature_forage.domain.model.ForageItem
@@ -38,8 +39,7 @@ fun AddForageItemScreen(
     navigator = navigatorIn
     showDelete = false
 
-    val state by viewModel.state
-    AddEditForageItemContent(state.item)
+    AddEditForageItemContent("Add Item")
 }
 
 @Destination
@@ -53,33 +53,52 @@ fun EditForageItemScreen(
     navigator = navigatorIn
     showDelete = true
 
-    viewModel.retrieveItem(itemId)
+    viewModel.retrieveItem(itemId, LocalContext.current)
 
-    val state by viewModel.state
-    AddEditForageItemContent(state.item)
+    AddEditForageItemContent("Edit Item")
 }
 
 @Preview(showBackground = true)
 @Composable
-fun AddEditForageItemPreview() {
-    AddEditForageItemContent(exampleForageItem)
+fun AddEditForageItemPreview(
+) {
+    Scaffold(
+        topBar = {
+            ForageTopAppBar(
+                Title = "Add Item",
+                canNavigateBack = true,
+                navigateUp = { navigator.navigateUp() },
+            )
+        }) { innerPadding ->
+        AddEditItem(
+            exampleForageItem,
+            bitmap = null,
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
 }
 
 @Composable
 fun AddEditForageItemContent(
-    item: ForageItem,
+    topBarString: String,
     modifier: Modifier = Modifier,
 ) {
+    val state by viewModel.itemState
+
     Scaffold(
         modifier = modifier,
         topBar = {
             ForageTopAppBar(
-                Title = "Add Item",
-                canNavigateBack = false,
-                navigateUp = { },
+                Title = topBarString,
+                canNavigateBack = true,
+                navigateUp = { navigator.navigateUp() },
             )
         }) { innerPadding ->
-        AddEditItem(item, modifier.padding(innerPadding))
+        AddEditItem(
+            item = state.item,
+            bitmap = state.bitmap,
+            modifier = modifier.padding(innerPadding)
+        )
     }
 }
 
@@ -87,6 +106,7 @@ fun AddEditForageItemContent(
 fun AddEditItem(
     item: ForageItem,
     modifier: Modifier = Modifier,
+    bitmap: Bitmap? = null,
 ) {
     val launcher = getImageFromInternalStorageLauncher {
         viewModel.updateItemBitmap(it)
@@ -101,14 +121,14 @@ fun AddEditItem(
         val defaultModifier = Modifier.fillMaxWidth()
 
         Image(
-            painter = painterResource(id = R.drawable.emptyimage),
+            painter = rememberAsyncImagePainter(bitmap ?: R.drawable.emptyimage),
             contentDescription = "Change picture",
             modifier = defaultModifier
                 .weight(1f)
                 .clickable {
                     launcher.launch("image/*")
                 },
-            contentScale = ContentScale.Crop,
+            contentScale = if (bitmap == null) ContentScale.Fit else ContentScale.Crop,
         )
 
         OutlinedTextField(

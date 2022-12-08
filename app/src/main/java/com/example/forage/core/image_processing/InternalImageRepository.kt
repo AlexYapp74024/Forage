@@ -20,8 +20,8 @@ class InternalImageRepository(private val context: Context) : ImageRepository {
 
     override suspend fun loadImage(name: String): Image {
         return withContext(Dispatchers.IO) {
-            val file = File("${context.filesDir.absolutePath}/$name.png")
-            if (file.canRead() && file.isFile) {
+            val file = File("${context.filesDir.absolutePath}/$name")
+            if (file.canRead() && file.isFile && file.path.endsWith(".png")) {
                 val bytes = file.readBytes()
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 

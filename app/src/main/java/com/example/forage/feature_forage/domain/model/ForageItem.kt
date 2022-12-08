@@ -17,7 +17,7 @@ data class ForageItem(
 ) : Parcelable
 
 val ForageItem.imagePath
-    get() = "$name$id"
+    get() = "$name$id.png"
 
 val exampleForageItem: ForageItem
     get() = ForageItem(
