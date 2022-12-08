@@ -23,7 +23,7 @@ class AddEditItemViewModel @Inject constructor(
     val itemState: State<ForageItemWithImage> = _itemState
 
     fun updateItemBitmap(bitmap: Bitmap) {
-        _itemState.value = _itemState.value.copy(bitmap = bitmap)
+        _itemState.value.bitmap.value = bitmap
     }
 
     fun updateItemState(item: ForageItem) {

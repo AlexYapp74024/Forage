@@ -96,7 +96,7 @@ fun AddEditForageItemContent(
         }) { innerPadding ->
         AddEditItem(
             item = state.item,
-            bitmap = state.bitmap,
+            bitmap = state.bitmap.value,
             modifier = modifier.padding(innerPadding)
         )
     }
