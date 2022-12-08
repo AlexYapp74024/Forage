@@ -16,6 +16,9 @@ data class ForageItem(
     val notes: String = "",
 ) : Parcelable
 
+val ForageItem.imagePath
+    get() = "$name$id"
+
 val exampleForageItem: ForageItem
     get() = ForageItem(
         name = "Honeyberry",

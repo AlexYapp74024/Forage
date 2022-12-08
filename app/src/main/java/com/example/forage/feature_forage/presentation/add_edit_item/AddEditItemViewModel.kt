@@ -1,5 +1,7 @@
 package com.example.forage.feature_forage.presentation.add_edit_item
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,34 +14,44 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEditViewModel @Inject constructor(
+class AddEditItemViewModel @Inject constructor(
     private val useCases: ForageItemUseCases,
 ) : ViewModel() {
 
-    private var _item = mutableStateOf(ForageItem())
-    val item: State<ForageItem> = _item
+    private var _state = mutableStateOf(AddEditItemUiState())
+    val state: State<AddEditItemUiState> = _state
+
+    fun updateItemBitmap(bitmap: Bitmap) {
+        _state.value = _state.value.copy(bitmap = bitmap)
+    }
 
     fun updateItemState(item: ForageItem) {
-        _item.value = item
+        _state.value = _state.value.copy(item = item)
     }
 
     fun retrieveItem(id: Int) {
         viewModelScope.launch {
             useCases.getForageItem(id)
                 .map { it ?: ForageItem() }
-                .collect { _item.value = it }
+                .collect { item ->
+                    _state.value = _state.value.copy(item = item)
+                }
         }
     }
 
-    fun addItem() {
+    fun addItem(context: Context) {
         viewModelScope.launch {
-            useCases.addForageItem(item.value)
+            _state.value.run {
+                useCases.addForageItem(item, bitmap, context)
+            }
         }
     }
 
     fun deleteItem() {
         viewModelScope.launch {
-            useCases.deleteForageItem(item.value)
+            _state.value.run {
+                useCases.deleteForageItem(item)
+            }
         }
     }
 }

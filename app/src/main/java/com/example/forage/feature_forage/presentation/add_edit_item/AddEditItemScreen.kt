@@ -1,14 +1,21 @@
 package com.example.forage.feature_forage.presentation.add_edit_item
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.forage.R
+import com.example.forage.core.image_processing.getImageFromInternalStorageLauncher
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.example.forage.feature_forage.presentation.destinations.ForageItemListScreenDestination
@@ -17,7 +24,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 
-private lateinit var viewModel: AddEditViewModel
+private lateinit var viewModel: AddEditItemViewModel
 private var navigator: DestinationsNavigator = EmptyDestinationsNavigator
 private var showDelete: Boolean = false
 
@@ -25,14 +32,14 @@ private var showDelete: Boolean = false
 @Composable
 fun AddForageItemScreen(
     navigatorIn: DestinationsNavigator,
-    viewModelIn: AddEditViewModel = hiltViewModel(),
+    viewModelIn: AddEditItemViewModel = hiltViewModel(),
 ) {
     viewModel = viewModelIn
     navigator = navigatorIn
     showDelete = false
 
-    val item by viewModel.item
-    AddEditForageItemContent(item)
+    val state by viewModel.state
+    AddEditForageItemContent(state.item)
 }
 
 @Destination
@@ -40,7 +47,7 @@ fun AddForageItemScreen(
 fun EditForageItemScreen(
     itemId: Int,
     navigatorIn: DestinationsNavigator,
-    viewModelIn: AddEditViewModel = hiltViewModel(),
+    viewModelIn: AddEditItemViewModel = hiltViewModel(),
 ) {
     viewModel = viewModelIn
     navigator = navigatorIn
@@ -48,8 +55,8 @@ fun EditForageItemScreen(
 
     viewModel.retrieveItem(itemId)
 
-    val item by viewModel.item
-    AddEditForageItemContent(item)
+    val state by viewModel.state
+    AddEditForageItemContent(state.item)
 }
 
 @Preview(showBackground = true)
@@ -81,6 +88,10 @@ fun AddEditItem(
     item: ForageItem,
     modifier: Modifier = Modifier,
 ) {
+    val launcher = getImageFromInternalStorageLauncher {
+        viewModel.updateItemBitmap(it)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -89,17 +100,32 @@ fun AddEditItem(
     ) {
         val defaultModifier = Modifier.fillMaxWidth()
 
+        Image(
+            painter = painterResource(id = R.drawable.emptyimage),
+            contentDescription = "Change picture",
+            modifier = defaultModifier
+                .weight(1f)
+                .clickable {
+                    launcher.launch("image/*")
+                },
+            contentScale = ContentScale.Crop,
+        )
+
         OutlinedTextField(
             modifier = defaultModifier,
             value = item.name,
-            onValueChange = { viewModel.updateItemState(item.copy(name = it)) },
+            onValueChange = {
+                viewModel.updateItemState(item.copy(name = it))
+            },
             singleLine = true,
             label = { Text(text = "Name") })
 
         OutlinedTextField(
             modifier = defaultModifier,
             value = item.location,
-            onValueChange = { viewModel.updateItemState(item.copy(location = it)) },
+            onValueChange = {
+                viewModel.updateItemState(item.copy(location = it))
+            },
             singleLine = true,
             label = { Text(text = "Location") })
 
@@ -111,7 +137,9 @@ fun AddEditItem(
 
             Switch(
                 checked = item.inSeason,
-                onCheckedChange = { viewModel.updateItemState(item.copy(inSeason = it)) },
+                onCheckedChange = {
+                    viewModel.updateItemState(item.copy(inSeason = it))
+                },
             )
         }
 
@@ -121,9 +149,11 @@ fun AddEditItem(
             onValueChange = { viewModel.updateItemState(item.copy(notes = it)) },
             label = { Text(text = "Notes") })
 
+        val context = LocalContext.current
+
         Button(
             onClick = {
-                viewModel.addItem()
+                viewModel.addItem(context)
                 navigator.navigate(ForageItemListScreenDestination)
             },
             modifier = defaultModifier
