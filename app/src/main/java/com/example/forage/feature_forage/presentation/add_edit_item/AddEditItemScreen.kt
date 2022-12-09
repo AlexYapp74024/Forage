@@ -96,7 +96,7 @@ fun AddEditForageItemContent(
         }) { innerPadding ->
         AddEditItem(
             item = state.item,
-            bitmap = state.bitmap.value,
+            bitmap = state.bitmap,
             modifier = modifier.padding(innerPadding)
         )
     }
@@ -119,6 +119,9 @@ fun AddEditItem(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         val defaultModifier = Modifier.fillMaxWidth()
+
+        println("Input Bitmap ${if (bitmap == null) "null" else "not null"}")
+        println("ViewModel Bitmap ${if (bitmap == null) "null" else "not null"}")
 
         Image(
             painter = rememberAsyncImagePainter(bitmap ?: R.drawable.emptyimage),

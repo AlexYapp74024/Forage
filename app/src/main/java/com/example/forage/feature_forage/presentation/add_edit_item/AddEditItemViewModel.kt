@@ -23,7 +23,7 @@ class AddEditItemViewModel @Inject constructor(
     val itemState: State<ForageItemWithImage> = _itemState
 
     fun updateItemBitmap(bitmap: Bitmap) {
-        _itemState.value.bitmap.value = bitmap
+        _itemState.value = _itemState.value.copy(bitmap = bitmap)
     }
 
     fun updateItemState(item: ForageItem) {
@@ -36,7 +36,9 @@ class AddEditItemViewModel @Inject constructor(
                 .map { it ?: ForageItem() }
                 .collect { item ->
                     _itemState.value = ForageItemWithImage(item)
-                    _itemState.value = _itemState.value.loadImage(context)
+                    _itemState.value.loadImage(context) {
+                        updateItemBitmap(it)
+                    }
                 }
         }
     }
