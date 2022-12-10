@@ -1,7 +1,9 @@
 package com.example.forage.feature_forage.presentation.item_list
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +24,9 @@ class ForageItemListViewModel @Inject constructor(
     private var _state = mutableStateOf(ItemsListState())
     val state: State<ItemsListState> = _state
 
+    private var _bitmaps = mutableStateMapOf<Int, Bitmap>()
+    val bitmaps: Map<Int, Bitmap> = _bitmaps
+
     fun viewItem(
         navigator: DestinationsNavigator, id: Int
     ) {
@@ -36,17 +41,13 @@ class ForageItemListViewModel @Inject constructor(
             useCases.getAllForageItems(
                 itemOrder = state.value.itemOrder, onlyInSeason = state.value.displayOnlyInSeason
             ).collect { items ->
-                items.map { item ->
-                    ForageItemWithImage(item)
-                }.map { imageItem ->
-//                    imageItem.loadImage(context) { bitmap ->
-//                        println("Updated Images")
-//                        imageItem.updateBitmap(bitmap)
-//                    }
-                    imageItem
-                }.run {
-//                    _state.value = _state.value.copy(items = this)
+                items.forEach { item ->
+                    ForageItemWithImage(item).loadImage(context) { bmp ->
+                        _bitmaps[item.id] = bmp
+                    }
                 }
+
+                _state.value = _state.value.copy(items = items)
             }
         }
     }
