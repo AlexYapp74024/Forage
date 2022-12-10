@@ -31,7 +31,7 @@ class InternalImageRepository(private val context: Context) : ImageRepository {
             }
         }
     }
-    
+
     override suspend fun loadAllImage(): List<Image> {
         return withContext(Dispatchers.IO) {
             val files = context.filesDir.listFiles()

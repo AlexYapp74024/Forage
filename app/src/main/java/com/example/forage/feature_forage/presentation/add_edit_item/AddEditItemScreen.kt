@@ -1,7 +1,6 @@
 package com.example.forage.feature_forage.presentation.add_edit_item
 
 import android.graphics.Bitmap
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -14,12 +13,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
-import com.example.forage.R
 import com.example.forage.core.image_processing.getImageFromInternalStorageLauncher
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.example.forage.feature_forage.presentation.destinations.ForageItemListScreenDestination
+import com.example.forage.feature_forage.presentation.util.BitmapWithDefault
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -84,6 +82,7 @@ fun AddEditForageItemContent(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.itemState
+    val bitmap by state.bitmap
 
     Scaffold(
         modifier = modifier,
@@ -96,7 +95,7 @@ fun AddEditForageItemContent(
         }) { innerPadding ->
         AddEditItem(
             item = state.item,
-            bitmap = state.bitmap,
+            bitmap = bitmap,
             modifier = modifier.padding(innerPadding)
         )
     }
@@ -120,18 +119,15 @@ fun AddEditItem(
     ) {
         val defaultModifier = Modifier.fillMaxWidth()
 
-        println("Input Bitmap ${if (bitmap == null) "null" else "not null"}")
-        println("ViewModel Bitmap ${if (bitmap == null) "null" else "not null"}")
-
-        Image(
-            painter = rememberAsyncImagePainter(bitmap ?: R.drawable.emptyimage),
+        BitmapWithDefault(
+            bitmap = bitmap,
             contentDescription = "Change picture",
-            modifier = defaultModifier
-                .weight(1f)
+            modifier = Modifier
+                .aspectRatio(2f)
                 .clickable {
                     launcher.launch("image/*")
                 },
-            contentScale = if (bitmap == null) ContentScale.Fit else ContentScale.Crop,
+            contentScaleIfNotNull = ContentScale.Fit,
         )
 
         OutlinedTextField(

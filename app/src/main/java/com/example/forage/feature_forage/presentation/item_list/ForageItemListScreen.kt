@@ -8,12 +8,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.forage.feature_forage.domain.model.ForageItem
+import com.example.forage.feature_forage.domain.model.ForageItemWithImage
 import com.example.forage.feature_forage.presentation.destinations.AddForageItemScreenDestination
+import com.example.forage.feature_forage.presentation.util.BitmapWithDefault
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -27,13 +32,20 @@ private var navigator: DestinationsNavigator = EmptyDestinationsNavigator
 @Destination
 @Composable
 fun ForageItemListScreen(
-    viewModelIn: ForageItemListViewModel = hiltViewModel(),
     navigatorIn: DestinationsNavigator,
+    viewModelIn: ForageItemListViewModel = hiltViewModel(),
 ) {
     viewModel = viewModelIn
     navigator = navigatorIn
 
-    val state = viewModel.state.value
+    viewModel.retrieveItems(LocalContext.current)
+    println("Screen Recomposition")
+    ForageItemListScreen()
+}
+
+@Composable
+fun ForageItemListScreen() {
+    val state by viewModel.state
     ForageItemListScreenContent(state.items)
 }
 
@@ -42,17 +54,18 @@ fun ForageItemListScreen(
 fun ForageItemListPreview() {
     ForageItemListScreenContent(
         forageItemList = listOf(
-            ForageItem(0, "wild gooseberry", "Mountain View", true, ""),
-            ForageItem(2, "Blackberry (Rubus sp.)", "Forest", true, "")
+            ForageItemWithImage(ForageItem(0, "wild gooseberry", "Mountain View", true, "")),
+            ForageItemWithImage(ForageItem(2, "Blackberry", "Forest", true, "")),
         )
     )
 }
 
 @Composable
 fun ForageItemListScreenContent(
-    forageItemList: List<ForageItem>,
+    forageItemList: List<ForageItemWithImage>,
     modifier: Modifier = Modifier,
 ) {
+    println("Content Recomposition")
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -77,7 +90,7 @@ fun ForageItemListScreenContent(
             items(forageItemList) { item ->
                 ForageListItemEntry(item = item,
                     itemOnClick = {
-                        viewModel.viewItem(navigator, item.id)
+                        viewModel.viewItem(navigator, item.item.id)
                     })
             }
 
@@ -87,17 +100,31 @@ fun ForageItemListScreenContent(
 
 @Composable
 fun ForageListItemEntry(
-    item: ForageItem,
+    item: ForageItemWithImage,
     itemOnClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .clickable {
-            itemOnClick()
-        }) {
-        Text(text = item.name, style = MaterialTheme.typography.h5)
-        Text(text = item.location, style = MaterialTheme.typography.body1)
+    Row(modifier = modifier.fillMaxWidth()) {
+        val bitmap by item.bitmap
+
+        BitmapWithDefault(
+            bitmap = bitmap,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(64.dp)
+                .padding(4.dp),
+            contentScaleIfNotNull = ContentScale.Fit,
+        )
+
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                itemOnClick()
+            }) {
+            Text(text = item.item.name, style = MaterialTheme.typography.h5)
+            Text(text = item.item.location, style = MaterialTheme.typography.body1)
+        }
     }
 }
 

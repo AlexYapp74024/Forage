@@ -1,4 +1,4 @@
-package com.example.forage.feature_forage.presentation.item_list
+package com.example.forage.feature_forage.presentation.item_detail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,13 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.forage.feature_forage.domain.model.ForageItem
+import com.example.forage.feature_forage.domain.model.ForageItemWithImage
 import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.example.forage.feature_forage.presentation.destinations.EditForageItemScreenDestination
-import com.example.forage.feature_forage.presentation.item_detail.ForageItemDetailViewModel
+import com.example.forage.feature_forage.presentation.util.BitmapWithDefault
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -36,36 +38,49 @@ fun ForageItemDetailScreen(
     navigator = navigatorIn
     viewModel = viewModelIn
 
-    viewModel.retrieveItem(itemId)
+    viewModel.retrieveItem(LocalContext.current, itemId)
+    ForageItemDetailScreen()
+}
+
+@Composable
+fun ForageItemDetailScreen() {
     val item by viewModel.item
-    ForageItemDetailScreen(item)
+    ForageItemDetailContent(item)
 }
 
 @Preview
 @Composable
 fun ForageItemDetailPreview() {
-    ForageItemDetailScreen(
-        exampleForageItem
+    ForageItemDetailContent(
+        ForageItemWithImage(exampleForageItem)
     )
 }
 
 @Composable
-fun ForageItemDetailScreen(
-    item: ForageItem,
+fun ForageItemDetailContent(
+    itemWithImage: ForageItemWithImage,
     modifier: Modifier = Modifier
 ) {
+    val item = itemWithImage.item
+
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
             EditItemFloatingActionButton(floatingActionBtnOnClick = {
-                navigator.navigate(EditForageItemScreenDestination(item.id))
+                navigator.navigate(
+                    EditForageItemScreenDestination(
+                        item.id
+                    )
+                )
             })
         },
         topBar = {
             ForageTopAppBar(
                 Title = "Details",
                 canNavigateBack = true,
-                navigateUp = { },
+                navigateUp = {
+                    navigator.navigateUp()
+                },
             )
         }) { innerPadding ->
         Column(
@@ -75,6 +90,15 @@ fun ForageItemDetailScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            val bitmap by itemWithImage.bitmap
+            BitmapWithDefault(
+                bitmap = bitmap,
+                contentDescription = "Change picture",
+                modifier = Modifier.aspectRatio(2f),
+                contentScaleIfNotNull = ContentScale.Fit,
+            )
+
             Text(text = item.name, style = MaterialTheme.typography.h5)
 
             Row(verticalAlignment = Alignment.CenterVertically) {
