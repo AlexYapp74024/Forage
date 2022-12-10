@@ -41,11 +41,11 @@ class ForageItemListViewModel @Inject constructor(
                 }.map { imageItem ->
 //                    imageItem.loadImage(context) { bitmap ->
 //                        println("Updated Images")
-////                        imageItem.updateBitmap(bitmap)
+//                        imageItem.updateBitmap(bitmap)
 //                    }
                     imageItem
                 }.run {
-                    _state.value = _state.value.copy(items = this)
+//                    _state.value = _state.value.copy(items = this)
                 }
             }
         }

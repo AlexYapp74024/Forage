@@ -1,5 +1,6 @@
 package com.example.forage.feature_forage.presentation.item_list
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +11,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.ForageItemWithImage
 import com.example.forage.feature_forage.presentation.destinations.AddForageItemScreenDestination
-import com.example.forage.feature_forage.presentation.util.BitmapWithDefault
 import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -39,7 +38,7 @@ fun ForageItemListScreen(
     navigator = navigatorIn
 
     viewModel.retrieveItems(LocalContext.current)
-    println("Screen Recomposition")
+    Toast.makeText(LocalContext.current, "Screen Recomposition", Toast.LENGTH_LONG).show()
     ForageItemListScreen()
 }
 
@@ -105,17 +104,17 @@ fun ForageListItemEntry(
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
-        val bitmap by item.bitmap
-
-        BitmapWithDefault(
-            bitmap = bitmap,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(64.dp)
-                .padding(4.dp),
-            contentScaleIfNotNull = ContentScale.Fit,
-        )
+//        val bitmap by item.bitmap
+//
+//        BitmapWithDefault(
+//            bitmap = bitmap,
+//            contentDescription = null,
+//            modifier = Modifier
+//                .fillMaxHeight()
+//                .width(64.dp)
+//                .padding(4.dp),
+//            contentScaleIfNotNull = ContentScale.Fit,
+//        )
 
         Column(modifier = Modifier
             .fillMaxWidth()
