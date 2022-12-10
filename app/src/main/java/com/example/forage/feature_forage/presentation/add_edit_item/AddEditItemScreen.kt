@@ -82,7 +82,7 @@ fun AddEditForageItemContent(
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.itemState
-    val bitmap by state.bitmap
+    val bitmap = state.bitmap
 
     Scaffold(
         modifier = modifier,

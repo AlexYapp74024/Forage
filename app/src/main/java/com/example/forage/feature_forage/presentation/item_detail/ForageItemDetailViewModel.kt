@@ -28,7 +28,7 @@ class ForageItemDetailViewModel @Inject constructor(
                 .collect { item ->
                     _item.value = ForageItemWithImage(item)
                     _item.value.loadImage(context) { bitmap ->
-                        _item.value.updateBitmap(bitmap = bitmap)
+                        _item.value = _item.value.copy(bitmap = bitmap)
                     }
                 }
         }

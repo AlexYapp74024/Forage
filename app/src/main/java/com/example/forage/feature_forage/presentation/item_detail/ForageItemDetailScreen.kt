@@ -91,7 +91,7 @@ fun ForageItemDetailContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            val bitmap by itemWithImage.bitmap
+            val bitmap = itemWithImage.bitmap
             BitmapWithDefault(
                 bitmap = bitmap,
                 contentDescription = "Change picture",
