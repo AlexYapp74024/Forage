@@ -7,8 +7,9 @@ import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import javax.inject.Inject
 
-class ImageRepositoryImpl(val context: Context) : ImageRepository {
+class ImageRepositoryImpl @Inject constructor(val context: Context) : ImageRepository {
 
     override suspend fun saveImage(name: String, bitmap: Bitmap): Boolean {
         return withContext(Dispatchers.IO) {
@@ -19,8 +20,7 @@ class ImageRepositoryImpl(val context: Context) : ImageRepository {
     }
 
     override suspend fun loadImage(
-        name: String,
-        onImageReceived: (Bitmap) -> Unit
+        name: String, onImageReceived: (Bitmap) -> Unit
     ) {
         return withContext(Dispatchers.IO) {
             val file = File("${context.filesDir.absolutePath}/$name")

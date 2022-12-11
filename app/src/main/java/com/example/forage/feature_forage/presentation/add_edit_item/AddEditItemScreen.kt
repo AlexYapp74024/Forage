@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,7 +50,7 @@ fun EditForageItemScreen(
     navigator = navigatorIn
     showDelete = true
 
-    viewModel.retrieveItem(itemId, LocalContext.current)
+    viewModel.retrieveItem(itemId)
 
     AddEditForageItemContent("Edit Item")
 }
@@ -168,11 +167,9 @@ fun AddEditItem(
             onValueChange = { viewModel.updateItemState(item.copy(notes = it)) },
             label = { Text(text = "Notes") })
 
-        val context = LocalContext.current
-
         Button(
             onClick = {
-                viewModel.addItem(context)
+                viewModel.addItem()
                 navigator.navigate(ForageItemListScreenDestination)
             },
             modifier = defaultModifier

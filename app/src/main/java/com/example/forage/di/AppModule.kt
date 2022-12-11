@@ -1,7 +1,10 @@
 package com.example.forage.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
+import com.example.forage.core.image_processing.ImageRepository
+import com.example.forage.core.image_processing.ImageRepositoryImpl
 import com.example.forage.feature_forage.data.data_source.ForageItemDatabase
 import com.example.forage.feature_forage.data.repository.ForageItemRepositoryImpl
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
@@ -9,6 +12,7 @@ import com.example.forage.feature_forage.domain.use_case.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -20,9 +24,7 @@ object AppModule {
     @Singleton
     fun provideForageItemDatabase(app: Application): ForageItemDatabase {
         return Room.databaseBuilder(
-            app,
-            ForageItemDatabase::class.java,
-            ForageItemDatabase.DATABASE_NAME
+            app, ForageItemDatabase::class.java, ForageItemDatabase.DATABASE_NAME
         ).build()
     }
 
@@ -34,12 +36,21 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideForageItemUseCases(repository: ForageItemRepository): ForageItemUseCases {
+    fun provideImageRepository(@ApplicationContext context: Context): ImageRepository {
+        return ImageRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideForageItemUseCases(
+        repository: ForageItemRepository,
+        imageRepository: ImageRepository,
+    ): ForageItemUseCases {
         return ForageItemUseCases(
-            getAllForageItems = GetAllForageItems(repository),
-            getForageItem = GetForageItem(repository),
+            getAllForageItems = GetAllForageItems(repository, imageRepository),
+            getForageItem = GetForageItem(repository, imageRepository),
             deleteForageItem = DeleteForageItem(repository),
-            addForageItem = AddForageItem(repository),
+            addForageItem = AddForageItem(repository, imageRepository),
         )
     }
 }

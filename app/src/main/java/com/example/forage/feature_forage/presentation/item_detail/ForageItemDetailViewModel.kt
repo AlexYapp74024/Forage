@@ -1,6 +1,5 @@
 package com.example.forage.feature_forage.presentation.item_detail
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -20,9 +19,9 @@ class ForageItemDetailViewModel @Inject constructor(
     private var _item = mutableStateOf(ForageItemWithImage(ForageItem()))
     val item: State<ForageItemWithImage> = _item
 
-    fun retrieveItem(context: Context, id: Int) {
+    fun retrieveItem(id: Int) {
         viewModelScope.launch {
-            useCases.getForageItem.withImage(id, context) {
+            useCases.getForageItem.withImage(id) {
                 _item.value = it
             }
         }

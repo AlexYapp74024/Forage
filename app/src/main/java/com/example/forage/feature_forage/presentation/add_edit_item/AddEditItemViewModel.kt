@@ -1,6 +1,5 @@
 package com.example.forage.feature_forage.presentation.add_edit_item
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -29,17 +28,17 @@ class AddEditItemViewModel @Inject constructor(
         _item.value = _item.value.copy(item = item)
     }
 
-    fun retrieveItem(id: Int, context: Context) {
+    fun retrieveItem(id: Int) {
         viewModelScope.launch {
-            useCases.getForageItem.withImage(id, context) {
+            useCases.getForageItem.withImage(id) {
                 _item.value = it
             }
         }
     }
 
-    fun addItem(context: Context) {
+    fun addItem() {
         viewModelScope.launch {
-            useCases.addForageItem(context, item.value)
+            useCases.addForageItem(item.value)
         }
     }
 

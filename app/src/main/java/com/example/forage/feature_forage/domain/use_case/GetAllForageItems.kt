@@ -1,7 +1,7 @@
 package com.example.forage.feature_forage.domain.use_case
 
-import android.content.Context
 import android.graphics.Bitmap
+import com.example.forage.core.image_processing.ImageRepository
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.ForageItemWithImage
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class GetAllForageItems(
-    private val repository: ForageItemRepository
+    private val repository: ForageItemRepository,
+    private val imageRepository: ImageRepository
 ) {
     operator fun invoke(
         itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending),
@@ -24,7 +25,6 @@ class GetAllForageItems(
     }
 
     suspend fun withImages(
-        context: Context,
         itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending),
         onlyInSeason: Boolean = true,
         onImageUpdate: (ForageItem, Bitmap?) -> Unit,
@@ -34,7 +34,7 @@ class GetAllForageItems(
         ).collect { items ->
             items.forEach { item ->
                 onImageUpdate(item, null)
-                ForageItemWithImage(item).loadImage(context) { bmp ->
+                ForageItemWithImage(item).loadImage(imageRepository) { bmp ->
                     onImageUpdate(item, bmp)
                 }
             }

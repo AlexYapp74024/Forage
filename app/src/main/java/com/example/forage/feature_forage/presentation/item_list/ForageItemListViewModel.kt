@@ -1,6 +1,5 @@
 package com.example.forage.feature_forage.presentation.item_list
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateMapOf
@@ -35,11 +34,10 @@ class ForageItemListViewModel @Inject constructor(
 
     private var getItemsJob: Job? = null
 
-    fun retrieveItems(context: Context) {
+    fun retrieveItems() {
         getItemsJob?.cancel()
         getItemsJob = viewModelScope.launch {
             useCases.getAllForageItems.withImages(
-                context = context,
                 itemOrder = state.value.itemOrder,
                 onlyInSeason = state.value.displayOnlyInSeason
             ) { item, bmp ->
