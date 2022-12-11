@@ -10,7 +10,6 @@ import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.ForageItemWithImage
 import com.example.forage.feature_forage.domain.use_case.ForageItemUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,42 +18,34 @@ class AddEditItemViewModel @Inject constructor(
     private val useCases: ForageItemUseCases,
 ) : ViewModel() {
 
-    private var _itemState = mutableStateOf(ForageItemWithImage(ForageItem()))
-    val itemState: State<ForageItemWithImage> = _itemState
+    private var _item = mutableStateOf(ForageItemWithImage(ForageItem()))
+    val item: State<ForageItemWithImage> = _item
 
     fun updateItemBitmap(bitmap: Bitmap) {
-        _itemState.value = _itemState.value.copy(bitmap = bitmap)
+        _item.value = _item.value.copy(bitmap = bitmap)
     }
 
     fun updateItemState(item: ForageItem) {
-        _itemState.value = _itemState.value.copy(item = item)
+        _item.value = _item.value.copy(item = item)
     }
 
     fun retrieveItem(id: Int, context: Context) {
         viewModelScope.launch {
-            useCases.getForageItem(id)
-                .map { it ?: ForageItem() }
-                .collect { item ->
-                    _itemState.value = ForageItemWithImage(item)
-                    _itemState.value.loadImage(context) {
-                        updateItemBitmap(it)
-                    }
-                }
+            useCases.getForageItem.withImage(id, context) {
+                _item.value = it
+            }
         }
     }
 
     fun addItem(context: Context) {
         viewModelScope.launch {
-            _itemState.value.run {
-                useCases.addForageItem(item)
-                saveImage(context)
-            }
+            useCases.addForageItem(context, item.value)
         }
     }
 
     fun deleteItem() {
         viewModelScope.launch {
-            _itemState.value.run {
+            _item.value.run {
                 useCases.deleteForageItem(item)
             }
         }

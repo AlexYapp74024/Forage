@@ -81,7 +81,7 @@ fun AddEditForageItemContent(
     topBarString: String,
     modifier: Modifier = Modifier,
 ) {
-    val state by viewModel.itemState
+    val state by viewModel.item
     val bitmap = state.bitmap
 
     Scaffold(
