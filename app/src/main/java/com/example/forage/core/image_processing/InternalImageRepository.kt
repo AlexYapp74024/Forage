@@ -3,12 +3,12 @@ package com.example.forage.core.image_processing
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileInputStream
 
-class InternalImageRepository(private val context: Context) : ImageRepository {
+class InternalImageRepository(val context: Context) : ImageRepository {
 
     override suspend fun saveImage(name: String, bitmap: Bitmap): Boolean {
         return withContext(Dispatchers.IO) {
@@ -24,8 +24,9 @@ class InternalImageRepository(private val context: Context) : ImageRepository {
     ) {
         return withContext(Dispatchers.IO) {
             val file = File("${context.filesDir.absolutePath}/$name")
+            val imageUri: Uri = Uri.fromFile(file)
 
-            FileInputStream(file).use { stream ->
+            context.contentResolver.openInputStream(imageUri).use { stream ->
                 onImageReceived(BitmapFactory.decodeStream(stream))
             }
         }
