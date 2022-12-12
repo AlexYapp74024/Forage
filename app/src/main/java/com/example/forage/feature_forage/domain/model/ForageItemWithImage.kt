@@ -9,7 +9,7 @@ data class ForageItemWithImage(
 ) {
     suspend fun loadImage(
         imageRepository: ImageRepository,
-        onImageReceived: (Bitmap) -> Unit
+        onImageReceived: (Bitmap?) -> Unit
     ) {
         imageRepository.loadImage(imagePath) { bitmap ->
             onImageReceived(bitmap)
