@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
-class ImageRepositoryImpl @Inject constructor(val context: Context) : ImageRepository {
+class ImageRepositoryImpl @Inject constructor(private val context: Context) : ImageRepository {
 
     override suspend fun saveImage(name: String, bitmap: Bitmap): Boolean {
         return withContext(Dispatchers.IO) {
