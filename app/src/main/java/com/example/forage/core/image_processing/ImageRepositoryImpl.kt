@@ -4,19 +4,23 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.FileObserver
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
 class ImageRepositoryImpl @Inject constructor(private val context: Context) : ImageRepository {
 
+    private val imageBeingWritten = mutableSetOf<String>()
+
     override suspend fun saveImage(name: String, bitmap: Bitmap): Boolean {
 
         return withContext(Dispatchers.IO) {
             context.openFileOutput(name, Context.MODE_PRIVATE).use { stream ->
+                imageBeingWritten.add(name)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 95, stream)
+                imageBeingWritten.remove(name)
             }
         }
     }
@@ -24,21 +28,13 @@ class ImageRepositoryImpl @Inject constructor(private val context: Context) : Im
     override suspend fun loadImage(
         name: String, onImageReceived: (Bitmap?) -> Unit
     ) {
-        return withContext(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             val file = File("${context.filesDir.absolutePath}/$name")
-            var observerEvent = 0
-            val fileObserver = object : FileObserver(file) {
-                override fun onEvent(event: Int, path: String?) {
-                    observerEvent = event
-                    if (event and (CLOSE_WRITE or CLOSE_NOWRITE) != 0) {
-                        stopWatching()
-                    }
-                }
-            }.also {
-                it.startWatching()
-            }
-
             val imageUri: Uri = Uri.fromFile(file)
+
+            while (imageBeingWritten.contains(name)) {
+                delay(100)
+            }
 
             context.contentResolver.openInputStream(imageUri).use { stream ->
                 onImageReceived(BitmapFactory.decodeStream(stream))
