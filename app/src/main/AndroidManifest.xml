@@ -14,9 +14,11 @@
         android:theme="@style/Theme.Forage"
         tools:targetApi="31">
         <activity
+            android:name="com.canhub.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Forage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

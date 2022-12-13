@@ -12,6 +12,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
 import com.example.forage.core.image_processing.getImageFromInternalStorageLauncher
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.exampleForageItem
@@ -124,7 +126,13 @@ fun AddEditItem(
             modifier = Modifier
                 .aspectRatio(2f)
                 .clickable {
-                    launcher.launch("image/*")
+                    launcher.launch(
+                        CropImageContractOptions(
+                            null, CropImageOptions(
+                                imageSourceIncludeCamera = false
+                            )
+                        )
+                    )
                 },
             contentScaleIfNotNull = ContentScale.Fit,
         )
