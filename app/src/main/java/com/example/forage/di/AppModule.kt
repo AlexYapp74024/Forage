@@ -25,7 +25,7 @@ object AppModule {
     fun provideForageItemDatabase(app: Application): ForageItemDatabase {
         return Room.databaseBuilder(
             app, ForageItemDatabase::class.java, ForageItemDatabase.DATABASE_NAME
-        ).build()
+        ).addMigrations(ForageItemDatabase.migration1to2).build()
     }
 
     @Provides
