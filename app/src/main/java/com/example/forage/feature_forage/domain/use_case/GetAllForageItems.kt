@@ -18,7 +18,7 @@ class GetAllForageItems(
         itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending),
         onlyInSeason: Boolean = true,
     ): Flow<List<ForageItem>> {
-        return repository.getAll().map { items ->
+        return repository.getAllItem().map { items ->
             items.filter { !onlyInSeason || it.inSeason }
                 .sortOrder(itemOrder)
         }

@@ -10,7 +10,7 @@ class AddForageItem(
     private val imageRepository: ImageRepository
 ) {
     suspend operator fun invoke(forageItem: ForageItem) {
-        repository.insert(forageItem)
+        repository.insertItem(forageItem)
     }
 
     suspend operator fun invoke(forageItem: ForageItemWithImage) {

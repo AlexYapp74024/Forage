@@ -14,10 +14,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.forage.feature_forage.domain.model.ForageItem
-import com.example.forage.feature_forage.presentation.destinations.AddForageItemScreenDestination
 import com.example.forage.core.ui_util.BitmapWithDefault
 import com.example.forage.core.ui_util.ForageTopAppBar
+import com.example.forage.feature_forage.domain.model.ForageItem
+import com.example.forage.feature_forage.presentation.destinations.AddForageItemScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -51,8 +51,20 @@ fun ForageItemListScreen() {
 fun ForageItemListPreview() {
     ForageItemListScreenContent(
         forageItemList = mapOf(
-            ForageItem(0, "wild gooseberry", "Mountain View", true, "") to null,
-            ForageItem(2, "Blackberry", "Forest", true, "") to null
+            ForageItem(
+                id = 1,
+                name = "wild gooseberry",
+                location = "Mountain View",
+                inSeason = true,
+                notes = ""
+            ) to null,
+            ForageItem(
+                id = 2,
+                name = "Blackberry",
+                location = "Forest",
+                inSeason = true,
+                notes = ""
+            ) to null
         )
     )
 }

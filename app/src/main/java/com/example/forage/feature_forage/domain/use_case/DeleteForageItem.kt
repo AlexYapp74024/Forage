@@ -7,6 +7,6 @@ class DeleteForageItem(
     private val repository: ForageItemRepository
 ) {
     suspend operator fun invoke(forageItem: ForageItem) {
-        repository.delete(forageItem)
+        repository.deleteItem(forageItem)
     }
 }

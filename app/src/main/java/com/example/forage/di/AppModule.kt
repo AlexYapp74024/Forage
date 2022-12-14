@@ -31,7 +31,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideForageItemRepository(db: ForageItemDatabase): ForageItemRepository {
-        return ForageItemRepositoryImpl(db.forageItemDao)
+        return ForageItemRepositoryImpl(db.dao)
     }
 
     @Provides
