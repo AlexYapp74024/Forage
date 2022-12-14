@@ -1,4 +1,4 @@
-package com.example.forage.core.image_processing
+package com.example.forage.core.ui_util
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

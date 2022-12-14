@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.presentation.destinations.AddForageItemScreenDestination
-import com.example.forage.feature_forage.presentation.util.BitmapWithDefault
-import com.example.forage.feature_forage.presentation.util.ForageTopAppBar
+import com.example.forage.core.ui_util.BitmapWithDefault
+import com.example.forage.core.ui_util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator

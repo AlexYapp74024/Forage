@@ -1,4 +1,4 @@
-package com.example.forage.feature_forage.presentation.util
+package com.example.forage.core.ui_util
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
