@@ -1,4 +1,4 @@
-package com.example.forage.feature_forage.data.data_source
+package com.example.forage.data.data_source
 
 import androidx.room.*
 import com.example.forage.feature_forage.domain.model.ForageItem

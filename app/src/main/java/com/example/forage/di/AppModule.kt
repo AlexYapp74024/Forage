@@ -5,8 +5,8 @@ import android.content.Context
 import androidx.room.Room
 import com.example.forage.core.image_processing.ImageRepository
 import com.example.forage.core.image_processing.ImageRepositoryImpl
-import com.example.forage.feature_forage.data.data_source.ForageItemDatabase
-import com.example.forage.feature_forage.data.repository.ForageItemRepositoryImpl
+import com.example.forage.data.data_source.ForageItemDatabase
+import com.example.forage.data.repository.ForageItemRepositoryImpl
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
 import com.example.forage.feature_forage.domain.use_case.*
 import dagger.Module
