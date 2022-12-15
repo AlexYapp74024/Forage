@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.ForageItemWithImage
-import com.example.forage.feature_forage.domain.use_case.ForageItemUseCases
+import com.example.forage.feature_forage.domain.use_case.ForageItem_UseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ForageItemDetailViewModel @Inject constructor(
-    private val useCases: ForageItemUseCases,
+    private val useCases: ForageItem_UseCases,
 ) : ViewModel() {
 
     private var _item = mutableStateOf(ForageItemWithImage(ForageItem()))

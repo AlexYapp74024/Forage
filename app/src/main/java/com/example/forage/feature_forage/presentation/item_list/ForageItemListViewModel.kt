@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.forage.feature_forage.domain.model.ForageItem
-import com.example.forage.feature_forage.domain.use_case.ForageItemUseCases
+import com.example.forage.feature_forage.domain.use_case.ForageItem_UseCases
 import com.example.forage.feature_forage.presentation.destinations.ForageItemDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ForageItemListViewModel @Inject constructor(
-    private val useCases: ForageItemUseCases
+    private val useCases: ForageItem_UseCases
 ) : ViewModel() {
 
     private var _state = mutableStateOf(ItemsListState())

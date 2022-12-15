@@ -10,6 +10,9 @@ class AddForageItem(
     private val imageRepository: ImageRepository
 ) {
     suspend operator fun invoke(forageItem: ForageItem) {
+        with(forageItem) {
+            if (name.isEmpty()) throw IllegalArgumentException("Name Cannot Be Empty")
+        }
         repository.insertItem(forageItem)
     }
 

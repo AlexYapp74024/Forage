@@ -7,14 +7,20 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ForageItemTestRepositoryTest {
 
-    private val testRepository = ForageItemTestRepository()
+    private lateinit var testRepository: ForageItemTestRepository
     private val testItem = exampleForageItem
     private val testCategory = exampleCategory
+
+    @Before
+    fun setup() {
+        testRepository = ForageItemTestRepository()
+    }
 
     @Test
     fun insertItem() = runTest {

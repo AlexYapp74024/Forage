@@ -9,6 +9,7 @@ import com.example.forage.data.data_source.ForageItemDatabase
 import com.example.forage.data.repository.ForageItemRepositoryImpl
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
 import com.example.forage.feature_forage.domain.use_case.*
+import com.example.forage.feature_forage.domain.use_case.ForageItem_UseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,12 +46,10 @@ object AppModule {
     fun provideForageItemUseCases(
         repository: ForageItemRepository,
         imageRepository: ImageRepository,
-    ): ForageItemUseCases {
-        return ForageItemUseCases(
-            getAllForageItems = GetAllForageItems(repository, imageRepository),
-            getForageItem = GetForageItem(repository, imageRepository),
-            deleteForageItem = DeleteForageItem(repository),
-            addForageItem = AddForageItem(repository, imageRepository),
+    ): ForageItem_UseCases {
+        return ForageItem_UseCases.instantiate(
+            repository = repository,
+            imageRepository = imageRepository
         )
     }
 }
