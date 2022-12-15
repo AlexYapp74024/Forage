@@ -12,8 +12,8 @@ interface ForageItemRepository {
     fun getItem(id: Int): Flow<ForageItem?>
     fun getAllItem(): Flow<List<ForageItem>>
 
-    suspend fun insertCategory(item: Category)
-    suspend fun deleteCategory(item: Category)
+    suspend fun insertCategory(category: Category)
+    suspend fun deleteCategory(category: Category)
     fun getCategory(id: Int): Flow<Category?>
     fun getAllCategory(): Flow<List<Category>>
 

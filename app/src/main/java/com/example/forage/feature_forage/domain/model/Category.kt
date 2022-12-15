@@ -12,3 +12,5 @@ data class Category(
     val id: Int = 0,
     val name: String = "",
 ) : Parcelable
+
+val exampleCategory = Category(1, "Berries")

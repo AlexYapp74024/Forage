@@ -17,9 +17,9 @@ class ForageItemRepositoryImpl(
 
     override fun getAllItem(): Flow<List<ForageItem>> = dao.getAllItem()
 
-    override suspend fun insertCategory(item: Category) = dao.insertCategory(item)
+    override suspend fun insertCategory(category: Category) = dao.insertCategory(category)
 
-    override suspend fun deleteCategory(item: Category) = dao.deleteCategory(item)
+    override suspend fun deleteCategory(category: Category) = dao.deleteCategory(category)
 
     override fun getCategory(id: Int): Flow<Category?> = dao.getCategory(id)
 

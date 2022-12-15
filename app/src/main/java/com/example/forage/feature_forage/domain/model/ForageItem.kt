@@ -19,6 +19,8 @@ data class ForageItem(
 
 val exampleForageItem: ForageItem
     get() = ForageItem(
+        id = 1,
+        categoryID = exampleCategory.id,
         name = "Honeyberry",
         location = "CertShop",
         notes = "cute af"
