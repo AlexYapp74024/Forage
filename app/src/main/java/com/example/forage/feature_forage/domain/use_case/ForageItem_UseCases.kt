@@ -3,6 +3,7 @@ package com.example.forage.feature_forage.domain.use_case
 import com.example.forage.core.image_processing.ImageRepository
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
 
+@Suppress("ClassName")
 data class ForageItem_UseCases(
     val getAllForageItems: GetAllForageItems,
     val getForageItem: GetForageItem,

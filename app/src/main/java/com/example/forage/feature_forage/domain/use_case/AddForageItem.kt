@@ -16,10 +16,13 @@ class AddForageItem(
         repository.insertItem(forageItem)
     }
 
-    suspend operator fun invoke(forageItem: ForageItemWithImage) {
+    suspend operator fun invoke(
+        forageItem: ForageItemWithImage,
+        imageUpdated: Boolean = true,
+    ) {
         forageItem.run {
             this@AddForageItem(item)
-            saveImage(imageRepository)
+            if (imageUpdated) saveImage(imageRepository)
         }
     }
 }

@@ -6,7 +6,15 @@ import kotlinx.coroutines.flow.map
 class GetAllCategories(
     private val repository: ForageItemRepository,
 ) {
-    fun invoke() = repository.getAllCategory().map { list ->
+    operator fun invoke() = repository.getAllCategory().map { list ->
         list.sortedBy { it.name }
+    }
+
+    fun withItems() = repository.getAllCategory().map { categoryList ->
+        categoryList.map { category ->
+            GetCategoryWithItems(repository).invoke(category)
+        }
+    }.map { list ->
+        list.flatten().sortedBy { it.category.name }
     }
 }

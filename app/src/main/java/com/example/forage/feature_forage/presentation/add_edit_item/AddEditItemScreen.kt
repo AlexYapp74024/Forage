@@ -3,6 +3,8 @@ package com.example.forage.feature_forage.presentation.add_edit_item
 import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,12 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.example.forage.core.ui_util.BitmapWithDefault
+import com.example.forage.core.ui_util.ExposedDropdownCanAddNewItem
+import com.example.forage.core.ui_util.ForageTopAppBar
 import com.example.forage.core.ui_util.getImageFromInternalStorageLauncher
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.example.forage.feature_forage.presentation.destinations.ForageItemListScreenDestination
-import com.example.forage.core.ui_util.BitmapWithDefault
-import com.example.forage.core.ui_util.ForageTopAppBar
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
@@ -115,7 +118,8 @@ fun AddEditItem(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         val defaultModifier = Modifier.fillMaxWidth()
@@ -155,6 +159,7 @@ fun AddEditItem(
             singleLine = true,
             label = { Text(text = "Location") })
 
+
         Row(
             modifier = defaultModifier,
             verticalAlignment = Alignment.CenterVertically
@@ -168,6 +173,23 @@ fun AddEditItem(
                 },
             )
         }
+
+        val categories by viewModel.categories
+
+        ExposedDropdownCanAddNewItem(
+            options = categories,
+            addNewItemPrompt = "Add New Category",
+            modifier = defaultModifier,
+            listItemToString = { it.name },
+            value = categories.find { it.id == item.categoryID },
+            onAddNewItem = {
+                viewModel.addNewCategory(it)
+            },
+            onSelect = {
+                viewModel.updateItemState(item.copy(categoryID = it.id))
+            },
+            label = { Text("Category") },
+        )
 
         OutlinedTextField(
             modifier = defaultModifier,
@@ -198,3 +220,4 @@ fun AddEditItem(
         }
     }
 }
+
