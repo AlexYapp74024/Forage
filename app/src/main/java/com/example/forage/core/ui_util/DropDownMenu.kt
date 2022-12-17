@@ -15,9 +15,11 @@ fun <T> ExposedDropdown(
     displayName: (T) -> String = { it.toString() },
     onSelect: (T) -> Unit,
     label: @Composable (() -> Unit)?,
+    value: T? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(displayName(options.first())) }
+    val selectedOptionText = if (options.isEmpty()) "(New)"
+    else displayName(value ?: options.first())
 
     ExposedDropdownContainer(
         modifier = modifier,
@@ -27,12 +29,10 @@ fun <T> ExposedDropdown(
         label = label,
     ) {
         options.forEach { selectionOption ->
-            DropdownMenuItem(
-                onClick = {
-                    onSelect(selectionOption)
-                    expanded = false
-                }
-            ) {
+            DropdownMenuItem(onClick = {
+                onSelect(selectionOption)
+                expanded = false
+            }) {
                 Text(text = displayName(selectionOption))
             }
         }
@@ -51,11 +51,8 @@ fun <T> ExposedDropdownCanAddNewItem(
     value: T? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val selectedOptionText =
-        if (options.isEmpty())
-            "(New)"
-        else
-            listItemToString(value ?: options.first())
+    val selectedOptionText = if (options.isEmpty()) "(New)"
+    else listItemToString(value ?: options.first())
 
 
     var showTextInputDialog by remember { mutableStateOf(false) }
@@ -88,22 +85,18 @@ fun <T> ExposedDropdownCanAddNewItem(
         label = label,
     ) {
         options.forEach { selectionOption ->
-            DropdownMenuItem(
-                onClick = {
-                    onSelect(selectionOption)
-                    expanded = false
-                }
-            ) {
+            DropdownMenuItem(onClick = {
+                onSelect(selectionOption)
+                expanded = false
+            }) {
                 Text(text = listItemToString(selectionOption))
             }
         }
 
-        DropdownMenuItem(
-            onClick = {
-                showTextInputDialog = true
-                expanded = false
-            }
-        ) {
+        DropdownMenuItem(onClick = {
+            showTextInputDialog = true
+            expanded = false
+        }) {
             Text(text = "(New)")
         }
     }
@@ -118,13 +111,9 @@ private fun ExposedDropdownContainer(
     label: @Composable (() -> Unit)?,
     content: @Composable (ColumnScope.() -> Unit),
 ) {
-    ExposedDropdownMenuBox(
-        modifier = modifier,
-        expanded = expanded,
-        onExpandedChange = {
-            changeExpand(!expanded)
-        }
-    ) {
+    ExposedDropdownMenuBox(modifier = modifier, expanded = expanded, onExpandedChange = {
+        changeExpand(!expanded)
+    }) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             readOnly = true,
@@ -140,12 +129,9 @@ private fun ExposedDropdownContainer(
         )
 
         ExposedDropdownMenu(
-            modifier = Modifier.fillMaxWidth(),
-            expanded = expanded,
-            onDismissRequest = {
+            modifier = Modifier.fillMaxWidth(), expanded = expanded, onDismissRequest = {
                 changeExpand(false)
-            },
-            content = content
+            }, content = content
         )
     }
 }

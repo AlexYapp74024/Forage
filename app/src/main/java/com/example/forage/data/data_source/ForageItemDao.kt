@@ -1,9 +1,9 @@
 package com.example.forage.data.data_source
 
 import androidx.room.*
-import com.example.forage.data.data_source.relations.CategoryWithForageItems
 import com.example.forage.feature_forage.domain.model.Category
 import com.example.forage.feature_forage.domain.model.ForageItem
+import com.example.forage.feature_forage.domain.model.relations.CategoryWithForageItems
 import kotlinx.coroutines.flow.Flow
 
 @Dao

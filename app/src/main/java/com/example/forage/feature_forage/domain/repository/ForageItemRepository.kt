@@ -1,6 +1,6 @@
 package com.example.forage.feature_forage.domain.repository
 
-import com.example.forage.data.data_source.relations.CategoryWithForageItems
+import com.example.forage.feature_forage.domain.model.relations.CategoryWithForageItems
 import com.example.forage.feature_forage.domain.model.Category
 import com.example.forage.feature_forage.domain.model.ForageItem
 import kotlinx.coroutines.flow.Flow

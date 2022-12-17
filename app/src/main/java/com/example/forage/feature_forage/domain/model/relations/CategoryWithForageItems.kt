@@ -1,4 +1,4 @@
-package com.example.forage.data.data_source.relations
+package com.example.forage.feature_forage.domain.model.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation

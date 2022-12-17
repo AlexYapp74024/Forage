@@ -1,6 +1,6 @@
 package com.example.forage.data.repository
 
-import com.example.forage.data.data_source.relations.CategoryWithForageItems
+import com.example.forage.feature_forage.domain.model.relations.CategoryWithForageItems
 import com.example.forage.feature_forage.domain.model.exampleCategory
 import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.google.common.truth.Truth.assertThat
