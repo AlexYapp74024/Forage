@@ -102,6 +102,8 @@ dependencies {
     // image cropper
     implementation "com.vanniktech:android-image-cropper:4.5.0"
 
+    implementation "dev.failsafe:failsafe:3.3.0"
+
     // Local Unit Tests
     implementation "androidx.test:core:1.5.0"
     testImplementation "junit:junit:4.13.2"

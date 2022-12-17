@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,9 +37,8 @@ private var showDelete: Boolean = false
 @Composable
 fun AddForageItemScreen(
     navigatorIn: DestinationsNavigator,
-    viewModelIn: AddEditItemViewModel = hiltViewModel(),
 ) {
-    viewModel = viewModelIn
+    viewModel = hiltViewModel()
     navigator = navigatorIn
     showDelete = false
 
@@ -49,9 +50,8 @@ fun AddForageItemScreen(
 fun EditForageItemScreen(
     itemId: Int,
     navigatorIn: DestinationsNavigator,
-    viewModelIn: AddEditItemViewModel = hiltViewModel(),
 ) {
-    viewModel = viewModelIn
+    viewModel = hiltViewModel()
     navigator = navigatorIn
     showDelete = true
 
@@ -145,17 +145,22 @@ fun AddEditItem(
             modifier = defaultModifier,
             value = item.name,
             onValueChange = {
-                viewModel.updateItemState(item.copy(name = it))
+                if (!it.contains('\n'))
+                    viewModel.updateItemState(item.copy(name = it))
             },
-            singleLine = true,
-            label = { Text(text = "Name") })
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            maxLines = 1,
+            label = { Text(text = "Name") }
+        )
 
         OutlinedTextField(
             modifier = defaultModifier,
             value = item.location,
             onValueChange = {
-                viewModel.updateItemState(item.copy(location = it))
+                if (!it.contains('\n'))
+                    viewModel.updateItemState(item.copy(location = it))
             },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             singleLine = true,
             label = { Text(text = "Location") })
 
@@ -194,7 +199,9 @@ fun AddEditItem(
         OutlinedTextField(
             modifier = defaultModifier,
             value = item.notes,
-            onValueChange = { viewModel.updateItemState(item.copy(notes = it)) },
+            onValueChange = {
+                viewModel.updateItemState(item.copy(notes = it))
+            },
             label = { Text(text = "Notes") })
 
         Button(

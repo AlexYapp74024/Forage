@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface ForageItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertItem(item: ForageItem)
+    suspend fun insertItem(item: ForageItem): Long
 
     @Delete
     suspend fun deleteItem(item: ForageItem)
@@ -22,7 +22,7 @@ interface ForageItemDao {
     fun getAllItem(): Flow<List<ForageItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCategory(category: Category)
+    suspend fun insertCategory(category: Category): Long
 
     @Delete
     suspend fun deleteCategory(category: Category)
@@ -36,4 +36,8 @@ interface ForageItemDao {
     @Transaction
     @Query("SELECT * FROM Category WHERE id = :categoryID")
     suspend fun getCategoryWithItems(categoryID: Int): List<CategoryWithForageItems>
+
+    @Transaction
+    @Query("SELECT * FROM Category ")
+    suspend fun getCategoryWithItems(): List<CategoryWithForageItems>
 }

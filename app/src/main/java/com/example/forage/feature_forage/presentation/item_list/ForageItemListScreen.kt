@@ -4,11 +4,12 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +23,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 private lateinit var viewModel: ForageItemListViewModel
 private var navigator: DestinationsNavigator = EmptyDestinationsNavigator
@@ -42,7 +45,7 @@ fun ForageItemListScreen(
 
 @Composable
 fun ForageItemListScreen() {
-    val bitmaps = viewModel.bitmaps
+    val bitmaps by viewModel.bitmaps
     ForageItemListScreenContent(bitmaps)
 }
 
@@ -57,21 +60,21 @@ fun ForageItemListPreview() {
                 location = "Mountain View",
                 inSeason = true,
                 notes = ""
-            ) to null,
+            ) to flow { emit(null) },
             ForageItem(
                 id = 2,
                 name = "Blackberry",
                 location = "Forest",
                 inSeason = true,
                 notes = ""
-            ) to null
+            ) to flow { emit(null) }
         )
     )
 }
 
 @Composable
 fun ForageItemListScreenContent(
-    forageItemList: Map<ForageItem, Bitmap?>,
+    forageItemList: Map<ForageItem, Flow<Bitmap?>>,
     modifier: Modifier = Modifier,
 ) {
     println("Content Recomposition")
@@ -93,15 +96,17 @@ fun ForageItemListScreenContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(forageItemList.keys.toList()) { item ->
-                ForageListItemEntry(
-                    item = item,
-                    bitmap = forageItemList[item],
-                    itemOnClick = {
-                        viewModel.viewItem(navigator, item.id)
-                    })
+            forageItemList.onEach { (item, bitmapFlow) ->
+                item {
+                    ForageListItemEntry(
+                        item = item,
+                        bitmapFlow = bitmapFlow,
+                        itemOnClick = {
+                            viewModel.viewItem(navigator, item.id)
+                        }
+                    )
+                }
             }
-
         }
     }
 }
@@ -109,7 +114,7 @@ fun ForageItemListScreenContent(
 @Composable
 fun ForageListItemEntry(
     item: ForageItem,
-    bitmap: Bitmap?,
+    bitmapFlow: Flow<Bitmap?>,
     itemOnClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -120,6 +125,7 @@ fun ForageListItemEntry(
             itemOnClick()
         }) {
 
+        val bitmap by bitmapFlow.collectAsState(initial = null)
         BitmapWithDefault(
             bitmap = bitmap,
             contentDescription = null,
@@ -129,6 +135,8 @@ fun ForageListItemEntry(
                 .padding(4.dp),
             contentScaleIfNotNull = ContentScale.Fit,
         )
+
+        Spacer(modifier = Modifier.width(8.dp))
 
         Column(
             modifier = Modifier.fillMaxWidth()

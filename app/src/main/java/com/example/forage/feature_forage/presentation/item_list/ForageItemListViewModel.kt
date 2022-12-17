@@ -1,17 +1,17 @@
 package com.example.forage.feature_forage.presentation.item_list
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.forage.core.asState
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.use_case.ForageItem_UseCases
 import com.example.forage.feature_forage.presentation.destinations.ForageItemDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,10 +21,10 @@ class ForageItemListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _state = mutableStateOf(ItemsListState())
-    val state: State<ItemsListState> = _state
+    val state = _state.asState()
 
-    private var _bitmaps = mutableStateMapOf<ForageItem, Bitmap?>()
-    val bitmaps: Map<ForageItem, Bitmap?> = _bitmaps
+    private var _bitmaps = mutableStateOf<Map<ForageItem, Flow<Bitmap?>>>(mapOf())
+    val bitmaps = _bitmaps.asState()
 
     fun viewItem(
         navigator: DestinationsNavigator, id: Int
@@ -40,8 +40,8 @@ class ForageItemListViewModel @Inject constructor(
             useCases.getAllForageItems.withImages(
                 itemOrder = state.value.itemOrder,
                 onlyInSeason = state.value.displayOnlyInSeason
-            ) { item, bmp ->
-                _bitmaps[item] = bmp
+            ).collect {
+                _bitmaps.value = it
             }
         }
     }

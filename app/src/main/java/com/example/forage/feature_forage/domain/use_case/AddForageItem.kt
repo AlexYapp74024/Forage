@@ -9,19 +9,20 @@ class AddForageItem(
     private val repository: ForageItemRepository,
     private val imageRepository: ImageRepository
 ) {
-    suspend operator fun invoke(forageItem: ForageItem) {
+    suspend operator fun invoke(forageItem: ForageItem): Long {
         with(forageItem) {
             if (name.isEmpty()) throw IllegalArgumentException("Name Cannot Be Empty")
         }
-        repository.insertItem(forageItem)
+        return repository.insertItem(forageItem)
     }
 
     suspend operator fun invoke(
         forageItem: ForageItemWithImage,
         imageUpdated: Boolean = true,
     ) {
-        forageItem.run {
-            this@AddForageItem(item)
+        val newID: Long = this(forageItem.item)
+
+        forageItem.copy(item = forageItem.item.copy(id = newID.toInt())).run {
             if (imageUpdated) saveImage(imageRepository)
         }
     }

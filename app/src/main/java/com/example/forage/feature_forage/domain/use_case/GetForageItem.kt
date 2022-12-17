@@ -20,7 +20,7 @@ class GetForageItem(
             .map { ForageItemWithImage(it) }
             .collect { imageItem ->
                 onImageUpdate(imageItem)
-                imageItem.loadImage(imageRepository) { bitmap ->
+                imageItem.loadImage(imageRepository).collect { bitmap ->
                     onImageUpdate(imageItem.copy(bitmap = bitmap))
                 }
             }

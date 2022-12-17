@@ -26,20 +26,17 @@ class GetAllForageItems(
 
     suspend fun withImages(
         itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending),
-        onlyInSeason: Boolean = true,
-        onImageUpdate: (ForageItem, Bitmap?) -> Unit,
-    ) {
-        this(
-            itemOrder = itemOrder, onlyInSeason = onlyInSeason
-        ).collect { items ->
-            items.forEach { item ->
-                onImageUpdate(item, null)
-                ForageItemWithImage(item).loadImage(imageRepository) { bmp ->
-                    onImageUpdate(item, bmp)
+        onlyInSeason: Boolean = true
+    ): Flow<Map<ForageItem, Flow<Bitmap?>>> =
+        this(itemOrder = itemOrder, onlyInSeason = onlyInSeason).map { items ->
+            mutableMapOf<ForageItem, Flow<Bitmap?>>().also { map ->
+                items.map { item ->
+                    ForageItemWithImage(item)
+                }.map {
+                    map[it.item] = it.loadImage(imageRepository)
                 }
             }
         }
-    }
 
     private fun List<ForageItem>.sortOrder(
         sortType: ForageItemOrder,

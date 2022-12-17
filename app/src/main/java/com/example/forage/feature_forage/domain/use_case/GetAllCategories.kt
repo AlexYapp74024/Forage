@@ -1,5 +1,7 @@
 package com.example.forage.feature_forage.domain.use_case
 
+import com.example.forage.feature_forage.domain.model.Category
+import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
 import kotlinx.coroutines.flow.map
 
@@ -10,11 +12,9 @@ class GetAllCategories(
         list.sortedBy { it.name }
     }
 
-    fun withItems() = repository.getAllCategory().map { categoryList ->
-        categoryList.map { category ->
-            GetCategoryWithItems(repository).invoke(category)
+    suspend fun withItems() = mutableMapOf<Category, List<ForageItem>>().also { map ->
+        repository.getCategoryWithItems().map {
+            map[it.category] = it.forageItems
         }
-    }.map { list ->
-        list.flatten().sortedBy { it.category.name }
     }
 }

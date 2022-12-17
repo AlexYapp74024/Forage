@@ -27,4 +27,6 @@ class ForageItemRepositoryImpl(
 
     override suspend fun getCategoryWithItems(category: Category) =
         dao.getCategoryWithItems(category.id)
+
+    override suspend fun getCategoryWithItems() = dao.getCategoryWithItems()
 }
