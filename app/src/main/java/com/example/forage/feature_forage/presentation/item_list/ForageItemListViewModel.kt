@@ -39,7 +39,8 @@ class ForageItemListViewModel @Inject constructor(
         getItemsJob = viewModelScope.launch {
             useCases.getAllForageItems.withImages(
                 itemOrder = state.value.itemOrder,
-                onlyInSeason = state.value.displayOnlyInSeason
+                onlyInSeason = state.value.displayOnlyInSeason,
+                scope = viewModelScope
             ).collect {
                 _bitmaps.value = it
             }

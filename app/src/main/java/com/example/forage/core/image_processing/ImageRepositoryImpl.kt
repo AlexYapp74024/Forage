@@ -47,8 +47,7 @@ class ImageRepositoryImpl @Inject constructor(private val context: Context) : Im
     }.flowOn(Dispatchers.IO)
 
     private suspend fun waitForSavingImage(name: String) {
-        while (imageBeingWritten.contains(name)) {
+        while (imageBeingWritten.contains(name))
             delay(100)
-        }
     }
 }
