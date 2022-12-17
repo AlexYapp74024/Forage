@@ -7,7 +7,7 @@ import com.example.forage.feature_forage.domain.model.ForageItemWithImage
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
 import com.example.forage.feature_forage.domain.util.ForageItemOrder
 import com.example.forage.feature_forage.domain.util.OrderType
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -29,19 +29,20 @@ class GetAllForageItems(
 
     suspend fun withImages(
         itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending),
-        onlyInSeason: Boolean = true,
-        scope: CoroutineScope
+        onlyInSeason: Boolean = true
     ): Flow<Map<ForageItem, Flow<Bitmap?>>> =
         this(itemOrder = itemOrder, onlyInSeason = onlyInSeason).map { items ->
             mutableMapOf<ForageItem, Flow<Bitmap?>>().also { map ->
                 items.map { item ->
                     ForageItemWithImage(item)
                 }.map {
-                    map[it.item] = it.loadImage(imageRepository).shareIn(
-                        scope = scope,
-                        started = SharingStarted.Lazily,
-                        replay = 1
-                    )
+                    coroutineScope {
+                        map[it.item] = it.loadImage(imageRepository).shareIn(
+                            scope = this,
+                            started = SharingStarted.Lazily,
+                            replay = 1
+                        )
+                    }
                 }
             }
         }
