@@ -17,7 +17,6 @@ class ImageRepositoryImpl @Inject constructor(private val context: Context) : Im
     private val imageBeingWritten = mutableSetOf<String>()
 
     override suspend fun saveImage(name: String, bitmap: Bitmap): Boolean {
-
         return withContext(Dispatchers.IO) {
             val file = File("${context.filesDir.absolutePath}/$name")
             if (!file.exists()) file.createNewFile()
