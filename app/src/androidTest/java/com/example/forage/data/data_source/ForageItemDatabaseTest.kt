@@ -6,8 +6,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import app.cash.turbine.test
+import com.example.forage.feature_forage.domain.model.Category
+import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.exampleCategory
 import com.example.forage.feature_forage.domain.model.exampleForageItem
+import com.example.forage.feature_forage.domain.model.relations.CategoryWithForageItems
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -79,5 +82,26 @@ class ForageItemDaoTest {
         dao.getAllCategory().test {
             assertThat(awaitItem()).doesNotContain(category)
         }
+    }
+
+    @Test
+    fun getAllCategoryWithItems() = runTest {
+        val expectedList = listOf(
+            CategoryWithForageItems(
+                Category(1),
+                listOf(ForageItem(1, categoryID = 1), ForageItem(2, categoryID = 1)),
+            ),
+            CategoryWithForageItems(
+                Category(2),
+                listOf(ForageItem(3, categoryID = 2), ForageItem(4, categoryID = 2))
+            ),
+        )
+
+        expectedList.onEach { (category, items) ->
+            dao.insertCategory(category)
+            items.onEach { dao.insertItem(it) }
+        }
+
+        assertThat(dao.getCategoryWithItems())
     }
 }

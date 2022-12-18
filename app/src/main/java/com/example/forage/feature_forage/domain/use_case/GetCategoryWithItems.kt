@@ -13,4 +13,11 @@ class GetCategoryWithItems(
                 map[it.category] = it.forageItems
             }
         }
+
+    suspend operator fun invoke() =
+        mutableMapOf<Category, List<ForageItem>>().also { map ->
+            repository.getCategoryWithItems().map {
+                map[it.category] = it.forageItems
+            }
+        }
 }
