@@ -11,7 +11,6 @@ import com.example.forage.feature_forage.domain.use_case.ForageItem_UseCases
 import com.example.forage.feature_forage.presentation.destinations.ForageItemDetailScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -50,33 +49,26 @@ class ForageItemListViewModel @Inject constructor(
 
 
     init {
-        refreshItems()
+        viewModelScope.launch { refreshItems() }
     }
 
-    private fun refreshItems() {
+    suspend fun refreshItems() {
         getBitmap()
         getCategories()
     }
 
-    private var getCategoryJob: Job? = null
-    private fun getCategories() {
-        getCategoryJob?.cancel()
-        getCategoryJob = viewModelScope.launch {
-            categories.value = useCases.getCategoryWithItems()
-        }
+    private suspend fun getCategories() {
+        categories.value = useCases.getCategoryWithItems()
     }
 
-    private var getImageJob: Job? = null
-    private fun getBitmap() {
-        getImageJob?.cancel()
-        getImageJob = viewModelScope.launch {
-            useCases.getAllForageItems.withImages(
-                itemOrder = state.value.itemOrder,
-                onlyInSeason = state.value.displayOnlyInSeason,
-                scope = this
-            ).collect {
-                bitmaps.value = it
-            }
+    private suspend fun getBitmap() {
+        useCases.getAllForageItems.withImages(
+            itemOrder = state.value.itemOrder,
+            onlyInSeason = state.value.displayOnlyInSeason,
+            scope = viewModelScope
+        ).collect {
+            bitmaps.value = it
+            println("")
         }
     }
 }

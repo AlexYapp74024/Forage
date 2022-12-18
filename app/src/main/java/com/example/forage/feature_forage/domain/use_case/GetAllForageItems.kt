@@ -31,8 +31,8 @@ class GetAllForageItems(
         itemOrder: ForageItemOrder = ForageItemOrder.Name(OrderType.Ascending),
         onlyInSeason: Boolean = true,
         scope: CoroutineScope
-    ): Flow<Map<ForageItem, Flow<Bitmap?>>> =
-        this(itemOrder = itemOrder, onlyInSeason = onlyInSeason).map { items ->
+    ): Flow<Map<ForageItem, Flow<Bitmap?>>> {
+        return this(itemOrder = itemOrder, onlyInSeason = onlyInSeason).map { items ->
             mutableMapOf<ForageItem, Flow<Bitmap?>>().also { map ->
                 items.map { item ->
                     ForageItemWithImage(item)
@@ -45,6 +45,7 @@ class GetAllForageItems(
                 }
             }
         }
+    }
 
     private fun List<ForageItem>.sortOrder(
         sortType: ForageItemOrder,

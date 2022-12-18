@@ -1,9 +1,9 @@
 package com.example.forage.data.repository
 
 import androidx.compose.runtime.mutableStateListOf
-import com.example.forage.feature_forage.domain.model.relations.CategoryWithForageItems
 import com.example.forage.feature_forage.domain.model.Category
 import com.example.forage.feature_forage.domain.model.ForageItem
+import com.example.forage.feature_forage.domain.model.relations.CategoryWithForageItems
 import com.example.forage.feature_forage.domain.repository.ForageItemRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,8 +14,9 @@ class ForageItemTestRepository : ForageItemRepository {
     private var itemList = mutableStateListOf<ForageItem>()
     private var categoryList = mutableStateListOf<Category>()
 
-    override suspend fun insertItem(item: ForageItem) {
+    override suspend fun insertItem(item: ForageItem): Long {
         itemList.add(item)
+        return item.id.toLong()
     }
 
     override suspend fun deleteItem(item: ForageItem) {
@@ -33,8 +34,9 @@ class ForageItemTestRepository : ForageItemRepository {
         emit(itemList)
     }
 
-    override suspend fun insertCategory(category: Category) {
+    override suspend fun insertCategory(category: Category): Long {
         categoryList.add(category)
+        return category.id.toLong()
     }
 
     override suspend fun deleteCategory(category: Category) {
@@ -56,6 +58,13 @@ class ForageItemTestRepository : ForageItemRepository {
         return listOf(
             CategoryWithForageItems(category = category, forageItems = items)
         )
+    }
+
+    override suspend fun getCategoryWithItems(): List<CategoryWithForageItems> {
+        return categoryList.map { category ->
+            val items = itemList.filter { it.categoryID == category.id }
+            CategoryWithForageItems(category, items)
+        }
     }
 }
 
