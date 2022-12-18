@@ -30,7 +30,11 @@ class AddEditItemViewModel @Inject constructor(
 
     init {
         useCases.getAllCategories()
-            .onEach { _categories.value = it }
+            .onEach {
+                _categories.value = it.toMutableList().also { list ->
+                    list.add(Category.noCategory)
+                }
+            }
             .launchIn(viewModelScope)
     }
 

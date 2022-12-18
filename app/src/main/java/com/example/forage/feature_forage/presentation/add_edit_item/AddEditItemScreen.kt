@@ -22,6 +22,7 @@ import com.example.forage.core.ui_util.BitmapWithDefault
 import com.example.forage.core.ui_util.ExposedDropdownCanAddNewItem
 import com.example.forage.core.ui_util.ForageTopAppBar
 import com.example.forage.core.ui_util.getImageFromInternalStorageLauncher
+import com.example.forage.feature_forage.domain.model.Category
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.domain.model.exampleForageItem
 import com.example.forage.feature_forage.presentation.destinations.ForageItemListScreenDestination
@@ -186,7 +187,7 @@ fun AddEditItem(
             addNewItemPrompt = "Add New Category",
             modifier = defaultModifier,
             listItemToString = { it.name },
-            value = categories.find { it.id == item.categoryID },
+            value = categories.find { it.id == item.categoryID } ?: Category.noCategory,
             onAddNewItem = {
                 viewModel.addNewCategory(it)
             },

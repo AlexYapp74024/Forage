@@ -11,6 +11,10 @@ data class Category(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String = "",
-) : Parcelable
+) : Parcelable {
+    companion object {
+        val noCategory = Category(0, "No Category")
+    }
+}
 
 val exampleCategory = Category(1, "Berries")

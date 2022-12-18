@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.forage.core.ui_util.BitmapWithDefault
 import com.example.forage.core.ui_util.ForageTopAppBar
+import com.example.forage.feature_forage.domain.model.Category
 import com.example.forage.feature_forage.domain.model.ForageItem
 import com.example.forage.feature_forage.presentation.destinations.AddForageItemScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
@@ -39,74 +41,112 @@ fun ForageItemListScreen(
     viewModel = viewModelIn
     navigator = navigatorIn
 
-    viewModel.retrieveItems()
     ForageItemListScreen()
 }
 
 @Composable
 fun ForageItemListScreen() {
-    val bitmaps by viewModel.bitmaps
-    ForageItemListScreenContent(bitmaps)
+    val items by viewModel.items.collectAsState(initial = mapOf())
+    ForageItemListScaffold { innerPadding ->
+        ForageItemListCategoryLists(items, Modifier.padding(innerPadding))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ForageItemListCategoryListsPreview(
+) {
+    val forageItemList = mapOf(
+        ForageItem(
+            id = 1,
+            name = "wild gooseberry",
+            location = "Mountain View",
+            inSeason = true,
+            notes = ""
+        ) to flow { emit(null) },
+        ForageItem(
+            id = 2,
+            name = "Blackberry",
+            location = "Forest",
+            inSeason = true,
+            notes = ""
+        ) to flow { emit(null) }
+    )
+
+    val items = mapOf(
+        Category(1, "Category 1") to forageItemList,
+        Category(2, "Category 2") to forageItemList,
+        Category(3, "Category 3") to forageItemList,
+    )
+
+    ForageItemListScaffold { innerPadding ->
+        ForageItemListCategoryLists(items, Modifier.padding(innerPadding))
+    }
+}
+
+@Composable
+fun ForageItemListCategoryLists(
+    forageItemList: Map<Category, Map<ForageItem, Flow<Bitmap?>>>,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(forageItemList.toList()) { (category, items) ->
+            Text(text = category.name)
+            ForageItemList(items)
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ForageItemListPreview() {
-    ForageItemListScreenContent(
-        forageItemList = mapOf(
-            ForageItem(
-                id = 1,
-                name = "wild gooseberry",
-                location = "Mountain View",
-                inSeason = true,
-                notes = ""
-            ) to flow { emit(null) },
-            ForageItem(
-                id = 2,
-                name = "Blackberry",
-                location = "Forest",
-                inSeason = true,
-                notes = ""
-            ) to flow { emit(null) }
-        )
+    val forageItemList = mapOf(
+        ForageItem(
+            id = 1,
+            name = "wild gooseberry",
+            location = "Mountain View",
+            inSeason = true,
+            notes = ""
+        ) to flow { emit(null) },
+        ForageItem(
+            id = 2,
+            name = "Blackberry",
+            location = "Forest",
+            inSeason = true,
+            notes = ""
+        ) to flow { emit(null) }
     )
+
+    ForageItemListScaffold(modifier = Modifier) {
+        ForageItemList(forageItemList)
+    }
+
 }
 
 @Composable
-fun ForageItemListScreenContent(
+fun ForageItemList(
     forageItemList: Map<ForageItem, Flow<Bitmap?>>,
     modifier: Modifier = Modifier,
 ) {
-    println("Content Recomposition")
-    Scaffold(modifier = modifier, floatingActionButton = {
-        AddItemFloatingActionButton(floatingActionBtnOnClick = {
-            navigator.navigate(AddForageItemScreenDestination)
-        })
-    }, topBar = {
-        ForageTopAppBar(
-            Title = "Items",
-            canNavigateBack = false,
-            navigateUp = { },
-        )
-    }) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            forageItemList.onEach { (item, bitmapFlow) ->
-                item {
-                    ForageListItemEntry(
-                        item = item,
-                        bitmapFlow = bitmapFlow,
-                        itemOnClick = {
-                            viewModel.viewItem(navigator, item.id)
-                        }
-                    )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        forageItemList.onEach { (item, bitmapFlow) ->
+            ForageListItemEntry(
+                item = item,
+                bitmapFlow = bitmapFlow,
+                itemOnClick = {
+                    viewModel.viewItem(navigator, item.id)
                 }
-            }
+            )
         }
     }
 }
@@ -145,6 +185,29 @@ fun ForageListItemEntry(
             Text(text = item.location, style = MaterialTheme.typography.body1)
         }
     }
+}
+
+@Composable
+fun ForageItemListScaffold(
+    modifier: Modifier = Modifier,
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        modifier = modifier,
+        floatingActionButton = {
+            AddItemFloatingActionButton(floatingActionBtnOnClick = {
+                navigator.navigate(AddForageItemScreenDestination)
+            })
+        },
+        topBar = {
+            ForageTopAppBar(
+                Title = "Items",
+                canNavigateBack = false,
+                navigateUp = { },
+            )
+        },
+        content = content
+    )
 }
 
 @Composable
